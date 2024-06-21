@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Home Page</title>
+    <link rel="stylesheet" href="static/styles.css" />
+    <script src="static/htmx.min.js"></script>
+</head>
+
+<body>
+    <h1>This is my page</h1>
+    <button hx-post="/clicked" hx-trigger="click" hx-swap="outerHTML">
+        Click Me!
+    </button>
+    <h1>important links</h1>
+    <ul>
+        <li>
+            <a href="/about">About Page</a>
+        </li>
+    </ul>
+</body>
+
+</html>
