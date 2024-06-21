@@ -14,29 +14,29 @@ var files embed.FS
 //go:embed static
 var statics embed.FS
 
-var (
-	indexTemplate   = template.Must(template.ParseFS(files, "templates/layout.html", "templates/index.html"))
-	aboutTemplate   = template.Must(template.ParseFS(files, "templates/layout.html", "templates/about.html"))
-	clickedTemplate = template.Must(template.ParseFS(files, "templates/clicked.html"))
-	msgTemplate     = template.Must(template.ParseFS(files, "templates/layout.html", "templates/message.html"))
-)
+var templates = map[string]*template.Template{
+	"index":   template.Must(template.ParseFS(files, "templates/layout.html", "templates/index.html")),
+	"about":   template.Must(template.ParseFS(files, "templates/layout.html", "templates/about.html")),
+	"message": template.Must(template.ParseFS(files, "templates/layout.html", "templates/message.html")),
+	"clicked": template.Must(template.ParseFS(files, "templates/clicked.html")),
+}
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	err := indexTemplate.Execute(w, nil)
+	err := templates["index"].Execute(w, nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
 func clickedHandler(w http.ResponseWriter, r *http.Request) {
-	err := clickedTemplate.Execute(w, nil)
+	err := templates["clicked"].Execute(w, nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
 func aboutHandler(w http.ResponseWriter, r *http.Request) {
-	err := aboutTemplate.Execute(w, nil)
+	err := templates["about"].Execute(w, nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -44,7 +44,7 @@ func aboutHandler(w http.ResponseWriter, r *http.Request) {
 
 func msgHandler(w http.ResponseWriter, r *http.Request) {
 	msg := r.PathValue("msg")
-	err := msgTemplate.Execute(w, msg)
+	err := templates["message"].Execute(w, msg)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
