@@ -11,27 +11,21 @@ import (
 //go:embed templates/*
 var files embed.FS
 
-var templates = template.Must(template.ParseGlob("templates/*"))
-
 var (
-	indexTemplate = template.Must(template.New("layout.html").ParseFS(files, "templates/layout.html", "templates/index.html"))
-	aboutTemplate = template.Must(template.New("layout.html").ParseFS(files, "templates/layout.html", "templates/about.html"))
+	indexTemplate   = template.Must(template.New("layout.html").ParseFS(files, "templates/layout.html", "templates/index.html"))
+	aboutTemplate   = template.Must(template.New("about.html").ParseFS(files, "templates/layout.html", "templates/about.html"))
+	clickedTemplate = template.Must(template.New("clicked.html").ParseFS(files, "templates/clicked.html"))
 )
 
-type Msg struct {
-	Msg string
-}
-
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	newMsg := "World"
-	err := indexTemplate.Execute(w, &Msg{Msg: newMsg})
+	err := indexTemplate.Execute(w, nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
 func clickedHandler(w http.ResponseWriter, r *http.Request) {
-	err := templates.ExecuteTemplate(w, "clicked.html", nil)
+	err := clickedTemplate.Execute(w, nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
