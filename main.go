@@ -18,6 +18,7 @@ var (
 	indexTemplate   = template.Must(template.ParseFS(files, "templates/layout.html", "templates/index.html"))
 	aboutTemplate   = template.Must(template.ParseFS(files, "templates/layout.html", "templates/about.html"))
 	clickedTemplate = template.Must(template.ParseFS(files, "templates/clicked.html"))
+	msgTemplate     = template.Must(template.ParseFS(files, "templates/layout.html", "templates/message.html"))
 )
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
@@ -41,6 +42,14 @@ func aboutHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func msgHandler(w http.ResponseWriter, r *http.Request) {
+	msg := r.PathValue("msg")
+	err := msgTemplate.Execute(w, msg)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
 func main() {
 
 	http.Handle("/static/", http.FileServer(http.FS(statics)))
@@ -48,6 +57,7 @@ func main() {
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/clicked", clickedHandler)
 	http.HandleFunc("/about", aboutHandler)
+	http.HandleFunc("/message/{msg}", msgHandler)
 
 	fmt.Println("starting server on port 8080...")
 	log.Fatal(http.ListenAndServe(":8080", nil))
