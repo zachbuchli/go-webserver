@@ -8,13 +8,16 @@ import (
 	"net/http"
 )
 
-//go:embed templates/*
+//go:embed templates
 var files embed.FS
 
+//go:embed static
+var statics embed.FS
+
 var (
-	indexTemplate   = template.Must(template.New("layout.html").ParseFS(files, "templates/layout.html", "templates/index.html"))
-	aboutTemplate   = template.Must(template.New("about.html").ParseFS(files, "templates/layout.html", "templates/about.html"))
-	clickedTemplate = template.Must(template.New("clicked.html").ParseFS(files, "templates/clicked.html"))
+	indexTemplate   = template.Must(template.ParseFS(files, "templates/layout.html", "templates/index.html"))
+	aboutTemplate   = template.Must(template.ParseFS(files, "templates/layout.html", "templates/about.html"))
+	clickedTemplate = template.Must(template.ParseFS(files, "templates/clicked.html"))
 )
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
@@ -40,7 +43,7 @@ func aboutHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	http.Handle("/static/", http.FileServer(http.FS(statics)))
 
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/clicked", clickedHandler)
