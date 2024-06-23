@@ -2,6 +2,7 @@
 {{define "content"}}
 <h1>File Browser</h1>
 <p>Path: {{.CurrentPath}}</p>
+{{if .IsDirectory }}
 <h2>Sub Paths</h2>
 <table>
     <tr>
@@ -17,7 +18,9 @@
     </tr>
     {{end}}
 </table>
-
+{{else}}
+<p>Path is a file!</p>
+{{end}}
 <h2>Links</h2>
 <ul>
     <li>

@@ -36,7 +36,9 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 func filePathHandler(w http.ResponseWriter, r *http.Request) {
 	currPath := r.PathValue("path")
-	fb := Fb{CurrentPath: currPath, SubPaths: []string{"Hello.txt", "world"}, IsDirectory: true}
+
+	fb := Fb{CurrentPath: currPath}
+
 	err := templates["fb"].Execute(w, fb)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
