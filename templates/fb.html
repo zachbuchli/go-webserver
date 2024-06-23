@@ -4,16 +4,16 @@
 <p>Path: {{.CurrentPath}}</p>
 {{if .IsDirectory }}
 <h2>Sub Paths</h2>
-<table>
+<table class="table">
     <tr>
         <th>File Name</th>
         <th>Nav</th>
     </tr>
     {{range .SubPaths}}
     <tr>
-        <td>{{.}}</td>
+        <td>{{.Name}}</td>
         <td>
-            <a href="/fb/{{.}}">Nav</a>
+            <a href="/fb/{{.Path}}">Nav</a>
         </td>
     </tr>
     {{end}}
