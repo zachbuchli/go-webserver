@@ -18,7 +18,7 @@ const rootPath = "./files"
 
 var templates = map[string]*template.Template{
 	"index": template.Must(template.ParseFS(templateDir, "templates/layout.html", "templates/index.html")),
-	"fb":    template.Must(template.ParseFS(templateDir, "templates/layout.html", "templates/fp.html")),
+	"fb":    template.Must(template.ParseFS(templateDir, "templates/layout.html", "templates/fb.html")),
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
