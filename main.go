@@ -16,6 +16,12 @@ var staticsDir embed.FS
 
 const rootPath = "./files"
 
+type Fb struct {
+	CurrentPath string
+	SubPaths    []string
+	IsDirectory bool
+}
+
 var templates = map[string]*template.Template{
 	"index": template.Must(template.ParseFS(templateDir, "templates/layout.html", "templates/index.html")),
 	"fb":    template.Must(template.ParseFS(templateDir, "templates/layout.html", "templates/fb.html")),
@@ -30,7 +36,8 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 func filePathHandler(w http.ResponseWriter, r *http.Request) {
 	currPath := r.PathValue("path")
-	err := templates["fb"].Execute(w, currPath)
+	fb := Fb{CurrentPath: currPath, SubPaths: []string{"Hello.txt", "world"}, IsDirectory: true}
+	err := templates["fb"].Execute(w, fb)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
