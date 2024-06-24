@@ -6,8 +6,10 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 //go:embed templates
@@ -19,8 +21,10 @@ var staticsDir embed.FS
 const rootPath = "files"
 
 type FbFile struct {
-	Name string
-	Path string
+	Name         string
+	Path         string
+	FileType     string
+	LastModified string
 }
 
 type Fb struct {
@@ -43,7 +47,12 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func filePathHandler(w http.ResponseWriter, r *http.Request) {
-	currPath := r.PathValue("path")
+	currPath, err := url.QueryUnescape(r.PathValue("path"))
+	if err != nil {
+		// going to assume this means file not found.
+		http.Error(w, "error parsing url", http.StatusNotFound)
+		return
+	}
 	fullPath := filepath.Join(rootPath, currPath)
 	fileInfo, err := os.Stat(fullPath)
 	if err != nil {
@@ -69,8 +78,17 @@ func filePathHandler(w http.ResponseWriter, r *http.Request) {
 		for i, f := range files {
 			subs[i].Path = currPath + "/" + f.Name()
 			subs[i].Name = f.Name()
+			subs[i].LastModified = f.ModTime().Format(time.RFC850)
+			if f.IsDir() {
+				subs[i].FileType = "directory"
+			} else {
+				subs[i].FileType = "file"
+			}
 		}
 		fb.SubPaths = subs
+	} else {
+		http.ServeFile(w, r, fullPath)
+		return
 	}
 
 	err = templates["fb"].Execute(w, fb)
@@ -87,6 +105,6 @@ func main() {
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/fb/{path...}", filePathHandler)
 
-	fmt.Println("starting server on port 8080...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	fmt.Println("starting server on port 3000...")
+	log.Fatal(http.ListenAndServe(":3000", nil))
 }

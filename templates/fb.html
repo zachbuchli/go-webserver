@@ -1,33 +1,33 @@
 {{define "title"}}File Browser{{end}}
 {{define "content"}}
-<h1>File Browser</h1>
-<p>Path: {{.CurrentPath}}</p>
-{{if .IsDirectory }}
-<h2>Sub Paths</h2>
-<table class="table">
-    <tr>
-        <th>File Name</th>
-        <th>Nav</th>
-    </tr>
-    {{range .SubPaths}}
-    <tr>
-        <td>{{.Name}}</td>
-        <td>
-            <a href="/fb/{{.Path}}">Nav</a>
-        </td>
-    </tr>
-    {{end}}
-</table>
-{{else}}
-<p>Path is a file!</p>
-{{end}}
-<h2>Links</h2>
-<ul>
-    <li>
-        <a href="/fb">File Browser Root</a>
-    </li>
-    <li>
-        <a href="/">Home page</a>
-    </li>
-</ul>
+<main>
+    <div class="container">
+        <h1>File Browser</h1>
+        <p>Path: {{.CurrentPath}}</p>
+        {{if .IsDirectory }}
+        <table class="table">
+            <tr>
+                <th>File Name</th>
+                <th>Type</th>
+                <th>Last Modified</th>
+            </tr>
+            {{range .SubPaths}}
+            <tr>
+                <td>
+                    <a hx-boost="false" href="/fb/{{.Path}}">{{.Name}}</a>
+                </td>
+                <td>{{.FileType}}</td>
+                <td>{{.LastModified}}</td>
+            </tr>
+            {{end}}
+        </table>
+        {{else}}
+        <p>Path is a file!</p>
+        {{end}}
+        <div class="container">
+            <a class="btn btn-primary" href="/fb">Go to File Browser Root</a>
+            <a class="btn btn-primary" href="/">Go to Home page</a>
+        </div>
+    </div>
+</main>
 {{end}}
