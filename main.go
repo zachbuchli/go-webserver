@@ -21,33 +21,30 @@ var templates = map[string]*template.Template{
 	"clicked": template.Must(template.ParseFS(files, "templates/clicked.html")),
 }
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	err := templates["index"].Execute(w, nil)
+// render is a helper function for rendering templates to w a http.ResponseWriter.
+// If the template doesnt exist or fails to render, it returns an http 500 error.
+func render(w http.ResponseWriter, templateName string, data any) {
+	err := templates[templateName].Execute(w, data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	render(w, "index", nil)
 }
 
 func clickedHandler(w http.ResponseWriter, r *http.Request) {
-	err := templates["clicked"].Execute(w, nil)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	render(w, "clicked", nil)
 }
 
 func aboutHandler(w http.ResponseWriter, r *http.Request) {
-	err := templates["about"].Execute(w, nil)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	render(w, "about", nil)
 }
 
 func msgHandler(w http.ResponseWriter, r *http.Request) {
 	msg := r.PathValue("msg")
-	err := templates["message"].Execute(w, msg)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	render(w, "message", msg)
 }
 
 func main() {
