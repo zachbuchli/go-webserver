@@ -59,6 +59,6 @@ func main() {
 	http.HandleFunc("/about", aboutHandler)
 	http.HandleFunc("/message/{msg}", msgHandler)
 
-	fmt.Println("starting server on port 8080...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	fmt.Println("starting server on port 3000...")
+	log.Fatal(http.ListenAndServe(":3000", nil))
 }
